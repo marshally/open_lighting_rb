@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = OpenLighting::VERSION
 
+  gem.add_development_dependency 'rake',        '~> 0.8.7'
   gem.add_development_dependency 'rspec',       '~> 2.11.0'
   gem.add_development_dependency 'growl',       '~> 1.0.3'
   gem.add_development_dependency 'guard',       '~> 1.2.3'
