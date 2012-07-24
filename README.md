@@ -3,6 +3,8 @@
 `open_lighting` is a light-weight Ruby wrapper for the
 [Open Lighting Architecture](http://www.opendmx.net/index.php/Open_Lighting_Architecture) project.
 
+[![Build Status](https://secure.travis-ci.org/marshally/open_lighting_rb.png?branch=master)](http://travis-ci.org/marshally/open_lighting_rb)
+
 ## Installation
 
 ### OS X
