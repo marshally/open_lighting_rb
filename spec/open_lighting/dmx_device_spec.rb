@@ -68,5 +68,45 @@ module OpenLighting
         @device.to_dmx.should == "127,0,0"
       end
     end
+
+    context ".point" do
+      context "when not initialized with points" do
+        it "should return nil for unknown points" do
+          device = OpenLighting::DmxDevice.new
+          device.points.should == {}
+        end
+      end
+
+      context "when initialized with points" do
+        before(:each) do
+          @device = OpenLighting::DmxDevice.new(:capabilities => [:pan, :tilt, :dimmer], :points => {:on => {:dimmer => 255}, :center => {:pan => 127, :tilt => 127}})
+        end
+
+        it "should return correct values for points" do
+          @device.point(:center)[:pan].should == 127
+          @device.point(:center)[:tilt].should == 127
+        end
+
+        context "when setting a point" do
+          it "should fail silently for incorrect point" do
+            @device.set(:point => :off)
+            @device.current_values.should == [0, 0, 0]
+          end
+
+          it "should update current_values" do
+            @device.set(:point => :center)
+            @device.current_values.should == [127, 127, 0]
+          end
+        end
+
+        context "when setting multiple points" do
+          it "should update current_values" do
+            @device.set(:point => :center)
+            @device.set(:point => :on)
+            @device.current_values.should == [127, 127, 255]
+          end
+        end
+      end
+    end
   end
 end
