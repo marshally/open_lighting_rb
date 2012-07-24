@@ -15,6 +15,10 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = OpenLighting::VERSION
 
+  if RUBY_VERSION.to_f == 1.9
+    gem.add_development_dependency 'simplecov', '~> 0.6.4'
+  end
+
   gem.add_development_dependency 'rake',        '~> 0.8.7'
   gem.add_development_dependency 'rspec',       '~> 2.11.0'
   gem.add_development_dependency 'growl',       '~> 1.0.3'
