@@ -1,8 +1,18 @@
 # OpenLighting
 
-TODO: Write a gem description
+`open_lighting` is a light-weight Ruby wrapper for the
+[Open Lighting Architecture](http://www.opendmx.net/index.php/Open_Lighting_Architecture) project.
 
 ## Installation
+
+### OS X
+
+    brew tap marshally/homebrew-alt
+    brew install open_lighting
+
+### Linux
+
+### Ruby Installation
 
 Add this line to your application's Gemfile:
 
@@ -15,6 +25,7 @@ And then execute:
 Or install it yourself as:
 
     $ gem install open_lighting
+
 
 ## Usage
 
