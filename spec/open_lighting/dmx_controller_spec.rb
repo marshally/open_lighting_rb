@@ -60,6 +60,30 @@ module OpenLighting
         @controller.to_dmx.should == "127,0,0,127,0,0,0,0,127,0,0"
       end
     end
+
+    describe ".instant!" do
+      before(:each) do
+        @controller = DmxController.new
+        @controller << DmxDevice.new(:start_address => 1, :capabilities => [:pan, :tilt, :dimmer])
+        @controller << DmxDevice.new(:start_address => 4, :capabilities => [:pan, :tilt, :dimmer])
+      end
+
+      it "should raise NotImplementedError" do
+        lambda { @controller.instant!(:pan => 127) }.should raise_error NotImplementedError
+      end
+    end
+
+    describe ".transition!" do
+      before(:each) do
+        @controller = DmxController.new
+        @controller << DmxDevice.new(:start_address => 1, :capabilities => [:pan, :tilt, :dimmer])
+        @controller << DmxDevice.new(:start_address => 4, :capabilities => [:pan, :tilt, :dimmer])
+      end
+
+      it "should raise NotImplementedError" do
+        lambda { @controller.transition!(:seconds => 2, :pan => 127) }.should raise_error NotImplementedError
+      end
+    end
   end
 end
 

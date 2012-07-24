@@ -27,7 +27,7 @@ module OpenLighting
       @devices.each {|device| device.set(options)}
     end
 
-    def instant(options = {})
+    def instant!(options = {})
       set(options)
       # write to pipe
       raise NotImplementedError
@@ -48,21 +48,11 @@ module OpenLighting
       results.map{|i| i.nil? ? 0 : i}
     end
 
-    def transition(options = {})
+    def transition!(options = {})
       previous = current_values
       set(options)
       # interpolate previous to current
       # write to pipe
-      raise NotImplementedError
-    end
-
-    def parallel(options = {}, &operations)
-      # save current light state
-      previous = current_values
-      # add up everything in block operations
-
-      # create transition statements over period as specified in options[:seconds]
-      # go!
       raise NotImplementedError
     end
   end
