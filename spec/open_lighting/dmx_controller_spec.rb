@@ -6,6 +6,20 @@ module OpenLighting
   describe DmxController do
     describe '.initialize' do
       context 'given default values' do
+        it 'uses default fps' do
+          c = DmxController.new
+          c.fps.should == 40
+        end
+        it 'uses default universe' do
+          c = DmxController.new
+          c.universe.should == 1
+        end
+        it 'uses default cmd' do
+          c = DmxController.new(:universe => 2)
+          c.cmd.should == "ola_streaming_client -u 2"
+        end
+      end
+      context 'given updated values' do
         it 'updates fps value' do
           c = DmxController.new(:fps => 20)
           c.fps.should == 20
@@ -63,46 +77,75 @@ module OpenLighting
 
     describe ".instant!" do
       before(:each) do
-        @controller = DmxController.new
+        @controller = DmxController.new(:test => true)
         @controller << DmxDevice.new(:start_address => 1, :capabilities => [:pan, :tilt, :dimmer])
         @controller << DmxDevice.new(:start_address => 4, :capabilities => [:pan, :tilt, :dimmer])
       end
 
-      it "should raise NotImplementedError" do
-        lambda { @controller.instant!(:pan => 127) }.should raise_error NotImplementedError
+      it "should write to the pipe" do
+        @controller.instant!(:pan => 127)
+        @controller.read_pipe.gets.should == "127,0,0,127,0,0\n"
+        @controller.write_pipe.close
+      end
+    end
+
+    describe ".ticks" do
+      before(:each) do
+        @controller = DmxController.new(:fps => 0.1)
+      end
+
+      it "should always have at least 1 tick" do
+        @controller.ticks(1).should == 1
+        @controller.ticks(-1).should == 1
+        @controller.ticks(-100000).should == 1
+        @controller.ticks(0).should == 1
+      end
+
+      it "should round down to fewer ticks" do
+        @controller.ticks(25).should == 2
+        @controller.ticks(30).should == 3
+        @controller.ticks(35).should == 3
+      end
+    end
+
+    describe ".interpolate" do
+      context "with fps equal to one" do
+        before(:each) do
+          @controller = DmxController.new
+        end
+
+        it "should handle one step" do
+          @controller.interpolate([1,1,1], [2,2,2], 1, 1).should == [2,2,2]
+        end
+
+        it "should handle multiple steps" do
+          @controller.interpolate([1,1,1], [2,2,2], 2, 1).should == [1.5,1.5,1.5]
+          @controller.interpolate([1,1,1], [2,2,2], 2, 2).should == [2,2,2]
+        end
+
+        it "should handle fractional input" do
+          @controller.interpolate([1.5,1.5,1.5], [4.5,4.5,4.5], 2, 1).should == [3.0,3.0,3.0]
+          @controller.interpolate([1.5,1.5,1.5], [4.5,4.5,4.5], 2, 2).should == [4.5,4.5,4.5]
+        end
       end
     end
 
     describe ".transition!" do
       before(:each) do
-        @controller = DmxController.new
+        @controller = DmxController.new(:fps => 1, :test => true)
         @controller << DmxDevice.new(:start_address => 1, :capabilities => [:pan, :tilt, :dimmer])
         @controller << DmxDevice.new(:start_address => 4, :capabilities => [:pan, :tilt, :dimmer])
       end
 
-      it "should raise NotImplementedError" do
-        lambda { @controller.transition!(:seconds => 2, :pan => 127) }.should raise_error NotImplementedError
+      it "should write interpolated values to the pipe" do
+        @controller.transition!(:seconds => 5, :pan => 25)
+        @controller.read_pipe.gets.should == "5,0,0,5,0,0\n"
+        @controller.read_pipe.gets.should == "10,0,0,10,0,0\n"
+        @controller.read_pipe.gets.should == "15,0,0,15,0,0\n"
+        @controller.read_pipe.gets.should == "20,0,0,20,0,0\n"
+        @controller.read_pipe.gets.should == "25,0,0,25,0,0\n"
+        @controller.write_pipe.close
       end
     end
   end
 end
-
-# #!/usr/bin/env ruby
-# require File.join(File.dirname(__FILE__), 'dmx')
-
-# devices = (0..11).map{|i| DmxLight.new(:start_address => i*5+1)}
-# controller = DmxController.new(:devices => devices)
-
-# while(1) do
-#   controller.center(:seconds => 2)
-#   controller.colors.each do |color|
-#     controller.set(:gobo => color)
-#     sleep(0.5)
-#   end
-#   controller.sweep(seconds: 5.0, pan: 0)
-#   controller.sweep(:seconds => 5.0, :pan => 255)
-#   controller.center(:seconds => 2)
-#   controller[9].tilt(:up)
-#   controller.send
-
-# end
