@@ -32,7 +32,7 @@ module OpenLighting
     end
 
     def set(options = {})
-      @devices.each {|device| device.set(options)}
+      @devices.each {|device| device.set(options.dup)}
     end
 
     def write!(values=current_values)

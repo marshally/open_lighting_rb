@@ -69,12 +69,16 @@ module OpenLighting
     describe ".to_dmx" do
       before(:each) do
         @controller = DmxController.new
-        @controller << DmxDevice.new(:start_address => 1, :capabilities => [:pan, :tilt, :dimmer])
-        @controller << DmxDevice.new(:start_address => 4, :capabilities => [:pan, :tilt, :dimmer])
+        @controller << DmxDevice.new(:start_address => 1, :capabilities => [:pan, :tilt, :dimmer], :points => {:center => {:pan => 127, :tilt => 127}})
+        @controller << DmxDevice.new(:start_address => 4, :capabilities => [:pan, :tilt, :dimmer], :points => {:center => {:pan => 127, :tilt => 127}})
       end
 
       it "should serialize all DmxDevices" do
         @controller.to_dmx.should == "0,0,0,0,0,0"
+        @controller.set(:pan => 255)
+        @controller.to_dmx.should == "255,0,0,255,0,0"
+        @controller.set(:point => :center)
+        @controller.to_dmx.should == "127,127,0,127,127,0"
       end
 
       it "should honor overlapping start_address" do
