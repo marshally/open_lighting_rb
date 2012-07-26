@@ -1,6 +1,4 @@
 require 'spec_helper'
-require "open_lighting/dmx_controller"
-require "open_lighting/dmx_device"
 
 module OpenLighting
   describe DmxController do
@@ -33,20 +31,37 @@ module OpenLighting
       end
 
       context 'when adding devices' do
-        before(:each) do
-          @controller << DmxDevice.new(:start_address => 1)
-          @controller << DmxDevice.new(:start_address => 6)
+        context 'when :start_address is specified' do
+          before(:each) do
+            @controller << DmxDevice.new(:start_address => 1)
+            @controller << DmxDevice.new(:start_address => 6)
+          end
+
+          it 'should return devices in the same order as added' do
+            @controller.devices.count.should == 2
+            @controller.devices.first.start_address.should == 1
+            @controller.devices.last.start_address.should == 6
+          end
+
+          it 'should attach controller to devices' do
+            @controller.devices.first.controller.should == @controller
+            @controller.devices.last.controller.should == @controller
+          end
         end
 
-        it 'should return devices in the same order as added' do
-          @controller.devices.count.should == 2
-          @controller.devices.first.start_address.should == 1
-          @controller.devices.last.start_address.should == 6
-        end
+        context 'when :start_address is not specified' do
+          before(:each) do
+            options = {:capabilities => [:pan, :tilt]}
+            @controller << DmxDevice.new(options)
+            @controller << DmxDevice.new(options)
+            @controller << DmxDevice.new(options)
+          end
 
-        it 'should attach controller to devices' do
-          @controller.devices.first.controller.should == @controller
-          @controller.devices.last.controller.should == @controller
+          it 'should add default :start_address' do
+            @controller.devices.count.should == 3
+            @controller.devices.first.start_address.should == 1
+            @controller.devices.last.start_address.should == 5
+          end
         end
       end
     end

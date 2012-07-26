@@ -1,6 +1,4 @@
 require 'spec_helper'
-require "open_lighting/dmx_controller"
-require "open_lighting/dmx_device"
 
 module OpenLighting
   describe DmxDevice do

@@ -26,6 +26,7 @@ module OpenLighting
     end
 
     def <<(val)
+      val.start_address ||= current_values.count + 1
       val.controller = self
       @devices << val
     end
