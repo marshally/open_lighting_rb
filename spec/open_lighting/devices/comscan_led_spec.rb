@@ -1,5 +1,4 @@
 require 'spec_helper'
-require "open_lighting/devices/comscan_led"
 
 module OpenLighting
   module Devices
