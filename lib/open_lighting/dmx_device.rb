@@ -41,13 +41,13 @@ module OpenLighting
     end
 
     def method_missing(meth, *args, &block)
-        if points[meth.to_sym]
-          set points[meth.to_sym]
-        else
-          super # You *must* call super if you don't handle the
-                # method, otherwise you'll mess up Ruby's method
-                # lookup.
-        end
+      if points[meth.to_sym]
+        set points[meth.to_sym]
+      else
+        super # You *must* call super if you don't handle the
+              # method, otherwise you'll mess up Ruby's method
+              # lookup.
       end
+    end
   end
 end
