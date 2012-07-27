@@ -73,12 +73,26 @@ module OpenLighting
         @controller << DmxDevice.new(:start_address => 4, :capabilities => [:pan, :tilt, :dimmer], :points => {:center => {:pan => 127, :tilt => 127}})
       end
 
+      it "should report correct capabilities" do
+        @controller.capabilities.should == [:pan, :tilt, :dimmer, :center]
+      end
+
       it "should serialize all DmxDevices" do
         @controller.to_dmx.should == "0,0,0,0,0,0"
         @controller.set(:pan => 255)
         @controller.to_dmx.should == "255,0,0,255,0,0"
         @controller.set(:point => :center)
         @controller.to_dmx.should == "127,127,0,127,127,0"
+      end
+
+      it "should do method_missing magics" do
+        @controller.to_dmx.should == "0,0,0,0,0,0"
+        @controller.center
+        @controller.to_dmx.should == "127,127,0,127,127,0"
+      end
+
+      it "but not for incorrect names" do
+        lambda { @controller.offcenter }.should raise_error NoMethodError
       end
 
       it "should honor overlapping start_address" do

@@ -91,5 +91,19 @@ module OpenLighting
       end
       results
     end
+
+    def capabilities
+      @devices.map{|device| device.capabilities + device.points.keys}.flatten.uniq
+    end
+
+    def method_missing(meth, *args, &block)
+      if capabilities.include? meth.to_sym
+        set :point => meth.to_sym
+      else
+        super # You *must* call super if you don't handle the
+              # method, otherwise you'll mess up Ruby's method
+              # lookup.
+      end
+    end
   end
 end
