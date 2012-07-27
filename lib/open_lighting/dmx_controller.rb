@@ -76,11 +76,13 @@ module OpenLighting
       1.0 / self.fps.to_f
     end
 
-    def transition!(options = {})
+    def transition!(options = {}, &block)
       previous = current_values
       set(options)
-      count = ticks(options[:seconds])
 
+      block.call(@devices) if block
+
+      count = ticks(options[:seconds])
       count.times do |i|
         # interpolate previous to current
         write! interpolate(previous, current_values, count, i+1)

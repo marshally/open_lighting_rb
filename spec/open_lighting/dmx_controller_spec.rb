@@ -195,6 +195,19 @@ module OpenLighting
         @controller.read_pipe.gets.should == "25,0,0,25,0,0\n"
         @controller.write_pipe.close
       end
+
+      it "should allow block syntax" do
+        @controller.transition!(:seconds => 5) do |devices|
+          devices[0].pan(25)
+          devices[1].pan(50)
+        end
+        @controller.read_pipe.gets.should == "5,0,0,10,0,0\n"
+        @controller.read_pipe.gets.should == "10,0,0,20,0,0\n"
+        @controller.read_pipe.gets.should == "15,0,0,30,0,0\n"
+        @controller.read_pipe.gets.should == "20,0,0,40,0,0\n"
+        @controller.read_pipe.gets.should == "25,0,0,50,0,0\n"
+        @controller.write_pipe.close
+      end
     end
   end
 end
