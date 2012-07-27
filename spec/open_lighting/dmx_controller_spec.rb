@@ -17,6 +17,7 @@ module OpenLighting
           c.cmd.should == "ola_streaming_client -u 2"
         end
       end
+
       context 'given updated values' do
         it 'updates fps value' do
           c = DmxController.new(:fps => 20)
@@ -93,6 +94,17 @@ module OpenLighting
         @controller.to_dmx.should == "0,0,0,0,0,0"
         @controller.center
         @controller.to_dmx.should == "127,127,0,127,127,0"
+        @controller.dimmer(80)
+        @controller.to_dmx.should == "127,127,80,127,127,80"
+      end
+
+      it "should do method_missing magics" do
+        @controller.connect_test_pipe
+        @controller.center!
+        @controller.read_pipe.gets.should == "127,127,0,127,127,0\n"
+        @controller.dimmer!(80)
+        @controller.read_pipe.gets.should == "127,127,80,127,127,80\n"
+        @controller.close!
       end
 
       it "but not for incorrect names" do

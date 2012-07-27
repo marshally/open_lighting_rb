@@ -105,8 +105,17 @@ module OpenLighting
     end
 
     def method_missing(meth, *args, &block)
-      if capabilities.include? meth.to_sym
-        set :point => meth.to_sym
+      meth_without_bang = meth.to_s.gsub(/!\Z/, "").to_sym
+
+      if points.include? meth
+        set :point => meth
+      elsif points.include? meth_without_bang
+        # causes controller.center! to convert to controller.instant!(:point => :center)
+        instant! :point => meth_without_bang
+      elsif capabilities.include? meth
+        set meth => args
+      elsif capabilities.include? meth_without_bang
+        instant! meth_without_bang => args.first
       else
         super # You *must* call super if you don't handle the
               # method, otherwise you'll mess up Ruby's method

@@ -101,6 +101,11 @@ module OpenLighting
             @device.current_values.should == [127, 127, 0]
           end
 
+          it "should do method_missing magics" do
+            @device.center
+            @device.current_values.should == [127, 127, 0]
+          end
+
           it "but not for incorrect names" do
             lambda {@device.offcenter}.should raise_error NoMethodError
           end
