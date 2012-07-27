@@ -24,7 +24,7 @@ module OpenLighting
 
       capabilities.each_with_index do |c, i|
         unless options[c].nil?
-          current_values[i] = options[c]
+          current_values[i] = options.delete(c)
         end
       end
     end
@@ -39,5 +39,15 @@ module OpenLighting
     def to_dmx
       current_values.join ","
     end
+
+    def method_missing(meth, *args, &block)
+        if points[meth.to_sym]
+          set points[meth.to_sym]
+        else
+          super # You *must* call super if you don't handle the
+                # method, otherwise you'll mess up Ruby's method
+                # lookup.
+        end
+      end
   end
 end
