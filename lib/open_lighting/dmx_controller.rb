@@ -7,7 +7,7 @@ module OpenLighting
   # control signal. The DmxController class is responsible for aggregating this
   # information from the DmxDevice instances and sending it down the bus.
   class DmxController
-    attr_accessor :fps, :devices, :universe, :cmd, :read_pipe, :write_pipe, :test_mode
+    attr_accessor :fps, :devices, :universe, :cmd, :read_pipe, :write_pipe, :do_not_sleep
     def initialize(options = {})
       @devices = []
       (options[:devices] || []).each {|dev| @devices << dev}
@@ -16,9 +16,13 @@ module OpenLighting
       self.cmd = options[:cmd] || "ola_streaming_client -u #{universe}"
 
       if options[:test]
-        self.test_mode = true
-        self.read_pipe, self.write_pipe = IO.pipe
+        self.do_not_sleep = true
+        self.connect_test_pipe
       end
+    end
+
+    def connect_test_pipe
+      self.read_pipe, self.write_pipe = IO.pipe
     end
 
     def devices
@@ -80,7 +84,7 @@ module OpenLighting
       count.times do |i|
         # interpolate previous to current
         write! interpolate(previous, current_values, count, i+1)
-        sleep(wait_time) unless self.test_mode==true
+        sleep(wait_time) unless self.do_not_sleep
       end
     end
 
