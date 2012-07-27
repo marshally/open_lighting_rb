@@ -74,7 +74,11 @@ module OpenLighting
       end
 
       it "should report correct capabilities" do
-        @controller.capabilities.should == [:pan, :tilt, :dimmer, :center]
+        @controller.capabilities.should == [:pan, :tilt, :dimmer]
+      end
+
+      it "should report correct points" do
+        @controller.points.should == [:center]
       end
 
       it "should serialize all DmxDevices" do

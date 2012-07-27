@@ -97,7 +97,11 @@ module OpenLighting
     end
 
     def capabilities
-      @devices.map{|device| device.capabilities + device.points.keys}.flatten.uniq
+      @devices.map{|device| device.capabilities}.flatten.uniq
+    end
+
+    def points
+      @devices.map{|device| device.points.keys}.flatten.uniq
     end
 
     def method_missing(meth, *args, &block)
