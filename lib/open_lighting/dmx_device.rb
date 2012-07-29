@@ -9,7 +9,7 @@ module OpenLighting
     attr_accessor :controller, :start_address, :capabilities, :points, :current_values, :defaults
     def initialize(options = {})
       self.start_address = options[:start_address]
-      self.capabilities = options[:capabilities] || []
+      self.capabilities = (options[:capabilities]  || []).map{|i| i.to_sym}
       self.defaults = options[:defaults] || {}
       self.current_values = capabilities.map{|c| defaults[c] || 0 }
       self.points = options[:points] || {}
@@ -58,3 +58,13 @@ module OpenLighting
     end
   end
 end
+
+class Hash
+  def symbolize_keys!
+    keys.each do |key|
+      self[(key.to_sym rescue key) || key] = delete(key)
+    end
+    self
+  end
+end
+
