@@ -1,3 +1,5 @@
+require 'json'
+
 module OpenLighting
   # The DmxController class is responsible for sending control messages across
   # the DMX bus.
@@ -36,7 +38,11 @@ module OpenLighting
     end
 
     def set(options = {})
-      @devices.each {|device| device.set(options.dup)}
+      warn "[DEPRECATION] `set` is deprecated. Use `buffer` instead."
+    end
+
+    def buffer(options = {})
+      @devices.each {|device| device.buffer(options.dup)}
     end
 
     def write!(values=current_values)
@@ -50,7 +56,7 @@ module OpenLighting
     end
 
     def instant!(options = {})
-      set(options)
+      buffer(options)
       write!
     end
 
@@ -77,8 +83,12 @@ module OpenLighting
     end
 
     def transition!(options = {}, &block)
+      warn "[DEPRECATION] `transition!` is deprecated. Use `begin_animation!` instead."
+    end
+
+    def begin_animation!(options = {}, &block)
       previous = current_values
-      set(options)
+      buffer(options)
 
       block.call(@devices) if block
 
@@ -110,12 +120,12 @@ module OpenLighting
       meth_without_bang = meth.to_s.gsub(/!\Z/, "").to_sym
 
       if points.include? meth
-        set :point => meth
+        buffer :point => meth
       elsif points.include? meth_without_bang
         # causes controller.center! to convert to controller.instant!(:point => :center)
         instant! :point => meth_without_bang
       elsif capabilities.include? meth
-        set meth => args
+        buffer meth => args
       elsif capabilities.include? meth_without_bang
         instant! meth_without_bang => args.first
       else

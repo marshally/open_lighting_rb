@@ -36,7 +36,7 @@ module OpenLighting
       end
     end
 
-    context ".set" do
+    context ".buffer" do
       before(:each) do
         @device = DmxDevice.new(:capabilities => [:pan, :tilt, :dimmer])
       end
@@ -44,7 +44,7 @@ module OpenLighting
       context "when setting correct capabilities" do
         it "should update current_values" do
           @device.current_values.should == [0, 0, 0]
-          @device.set(:pan => 127)
+          @device.buffer(:pan => 127)
           @device.current_values.should == [127, 0, 0]
         end
       end
@@ -52,7 +52,7 @@ module OpenLighting
       context "when setting incorrect capabilities" do
         it "should not update current_values" do
           @device.current_values.should == [0, 0, 0]
-          @device.set(:some_junk => 127)
+          @device.buffer(:some_junk => 127)
           @device.current_values.should == [0, 0, 0]
         end
       end
@@ -62,7 +62,7 @@ module OpenLighting
       it "should make comma laden magics" do
         @device = DmxDevice.new(:capabilities => [:pan, :tilt, :dimmer])
         @device.to_dmx.should == "0,0,0"
-        @device.set(:pan => 127)
+        @device.buffer(:pan => 127)
         @device.to_dmx.should == "127,0,0"
       end
     end
@@ -87,12 +87,12 @@ module OpenLighting
 
         context "when setting a point" do
           it "should fail silently for incorrect point" do
-            @device.set(:point => :off)
+            @device.buffer(:point => :off)
             @device.current_values.should == [0, 0, 0]
           end
 
           it "should update current_values" do
-            @device.set(:point => :center)
+            @device.buffer(:point => :center)
             @device.current_values.should == [127, 127, 0]
           end
 
@@ -113,8 +113,8 @@ module OpenLighting
 
         context "when setting multiple points" do
           it "should update current_values" do
-            @device.set(:point => :center)
-            @device.set(:point => :on)
+            @device.buffer(:point => :center)
+            @device.buffer(:point => :on)
             @device.current_values.should == [127, 127, 255]
           end
         end

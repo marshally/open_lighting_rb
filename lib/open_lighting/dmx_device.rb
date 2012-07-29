@@ -16,10 +16,15 @@ module OpenLighting
     end
 
     def set(options)
+      warn "[DEPRECATION] `set` is deprecated. Use `buffer` instead."
+      buffer(options)
+    end
+
+    def buffer(options)
       return if options.nil?
 
       if pt = options.delete(:point)
-        set points[pt]
+        buffer points[pt]
       end
 
       capabilities.each_with_index do |c, i|
@@ -42,9 +47,9 @@ module OpenLighting
 
     def method_missing(meth, *args, &block)
       if points[meth]
-        set points[meth]
+        buffer points[meth]
       elsif capabilities.include? meth
-        set meth => args.first
+        buffer meth => args.first
       else
         super # You *must* call super if you don't handle the
               # method, otherwise you'll mess up Ruby's method

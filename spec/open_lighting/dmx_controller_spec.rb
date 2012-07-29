@@ -84,9 +84,9 @@ module OpenLighting
 
       it "should serialize all DmxDevices" do
         @controller.to_dmx.should == "0,0,0,0,0,0"
-        @controller.set(:pan => 255)
+        @controller.buffer(:pan => 255)
         @controller.to_dmx.should == "255,0,0,255,0,0"
-        @controller.set(:point => :center)
+        @controller.buffer(:point => :center)
         @controller.to_dmx.should == "127,127,0,127,127,0"
       end
 
@@ -113,13 +113,13 @@ module OpenLighting
 
       it "should honor overlapping start_address" do
         @controller << DmxDevice.new(:start_address => 5, :capabilities => [:pan, :tilt, :dimmer])
-        @controller.set(:pan => 127)
+        @controller.buffer(:pan => 127)
         @controller.to_dmx.should == "127,0,0,127,127,0,0"
       end
 
       it "should insert zeros for missing data points" do
         @controller << DmxDevice.new(:start_address => 9, :capabilities => [:pan, :tilt, :dimmer])
-        @controller.set(:pan => 127)
+        @controller.buffer(:pan => 127)
         @controller.to_dmx.should == "127,0,0,127,0,0,0,0,127,0,0"
       end
     end
@@ -179,7 +179,7 @@ module OpenLighting
       end
     end
 
-    describe ".transition!" do
+    describe ".begin_animation!" do
       before(:each) do
         @controller = DmxController.new(:fps => 1, :test => true)
         @controller << DmxDevice.new(:start_address => 1, :capabilities => [:pan, :tilt, :dimmer])
@@ -187,7 +187,7 @@ module OpenLighting
       end
 
       it "should write interpolated values to the pipe" do
-        @controller.transition!(:seconds => 5, :pan => 25)
+        @controller.begin_animation!(:seconds => 5, :pan => 25)
         @controller.read_pipe.gets.should == "5,0,0,5,0,0\n"
         @controller.read_pipe.gets.should == "10,0,0,10,0,0\n"
         @controller.read_pipe.gets.should == "15,0,0,15,0,0\n"
@@ -197,7 +197,7 @@ module OpenLighting
       end
 
       it "should allow block syntax" do
-        @controller.transition!(:seconds => 5) do |devices|
+        @controller.begin_animation!(:seconds => 5) do |devices|
           devices[0].pan(25)
           devices[1].pan(50)
         end
