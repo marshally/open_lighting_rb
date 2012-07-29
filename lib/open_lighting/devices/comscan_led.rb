@@ -7,6 +7,7 @@ module OpenLighting
       def initialize(options = {})
         options[:points] ||= {}
         options[:points][:center] ||= {:pan => 127, :tilt => 127}
+        options[:points][:origin] ||= {:pan => 127, :tilt => 127, :strobe => 8, :gobo => 0, :dimmer => 0}
 
         options[:points][:strobe_blackout]  ||= {:strobe => 0}
         options[:points][:strobe_open]      ||= {:strobe => 8}
@@ -27,9 +28,10 @@ module OpenLighting
         options[:points][:rings]    ||= {:gobo => 57}
 
         options[:points][:on]       ||= {:dimmer => 255}
-        options[:points][:off]      ||= {:dimmer => 255}
+        options[:points][:off]      ||= {:dimmer => 0}
 
         options[:capabilities] ||= [:pan, :tilt, :strobe, :gobo, :dimmer]
+        options[:defaults]     ||= {:pan => 127, :tilt => 127, :strobe => 8, :gobo => 0, :dimmer => 0}
 
         super(options)
       end
