@@ -15,6 +15,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = OpenLighting::VERSION
 
+  gem.add_dependency             'json'
+
   if RUBY_VERSION.to_f == 1.9
     gem.add_development_dependency 'simplecov', '~> 0.6.4'
   end
