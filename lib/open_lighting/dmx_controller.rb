@@ -55,6 +55,11 @@ module OpenLighting
       self.write_pipe.flush
     end
 
+    def close!
+      self.write_pipe.close if self.write_pipe
+      self.read_pipe.close  if self.read_pipe
+    end
+
     def instant!(options = {})
       buffer(options)
       write!

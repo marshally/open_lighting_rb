@@ -18,6 +18,7 @@ module OpenLighting
         options[:points][:strobe_random]    ||= {:strobe => 247}
 
         options[:points][:nocolor]  ||= {:gobo => 0}
+        options[:points][:white]    ||= {:gobo => 0}
         options[:points][:yellow]   ||= {:gobo => 8}
         options[:points][:red]      ||= {:gobo => 15}
         options[:points][:green]    ||= {:gobo => 22}
