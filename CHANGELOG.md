@@ -1,3 +1,8 @@
+## Open Lighting 0.1.2 ##
+
+* fix nasty bug when calling named points multiple times
+* DmxController.close! method for explicitly closing the read/write pipes
+
 ## Open Lighting 0.1.1 ##
 
 * add named points after initialization
