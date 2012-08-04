@@ -20,7 +20,8 @@ module OpenLighting
       buffer(options)
     end
 
-    def buffer(options)
+    def buffer(opt)
+      options = opt.dup if opt
       return if options.nil?
 
       if pt = options.delete(:point)

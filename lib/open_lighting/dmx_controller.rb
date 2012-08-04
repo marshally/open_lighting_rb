@@ -42,7 +42,7 @@ module OpenLighting
     end
 
     def buffer(options = {})
-      @devices.each {|device| device.buffer(options.dup)}
+      @devices.each {|device| device.buffer(options)}
     end
 
     def write!(values=current_values)

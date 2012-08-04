@@ -96,6 +96,10 @@ module OpenLighting
         @controller.to_dmx.should == "127,127,0,127,127,0"
         @controller.dimmer(80)
         @controller.to_dmx.should == "127,127,80,127,127,80"
+        @controller.pan(25)
+        @controller.to_dmx.should == "25,127,80,25,127,80"
+        @controller.center
+        @controller.to_dmx.should == "127,127,80,127,127,80"
       end
 
       it "should do method_missing magics" do
