@@ -212,6 +212,13 @@ module OpenLighting
         @controller.read_pipe.gets.should == "25,0,0,50,0,0\n"
         @controller.write_pipe.close
       end
+
+      it "should allow sequential calls to method_missing and animate" do
+        @controller.dimmer(50)
+        @controller.to_dmx.should == "0,0,50,0,0,50"
+        @controller.animate!(:seconds => 1, :dimmer => 127)
+        @controller.read_pipe.gets.should == "0,0,127,0,0,127\n"
+      end
     end
   end
 end

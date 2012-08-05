@@ -134,7 +134,7 @@ module OpenLighting
         # causes controller.center! to convert to controller.instant!(:point => :center)
         instant! :point => meth_without_bang
       elsif capabilities.include? meth
-        buffer meth => args
+        buffer meth => args.first
       elsif capabilities.include? meth_without_bang
         instant! meth_without_bang => args.first
       else
