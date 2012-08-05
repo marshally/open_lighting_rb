@@ -191,7 +191,7 @@ module OpenLighting
       end
 
       it "should write interpolated values to the pipe" do
-        @controller.begin_animation!(:seconds => 5, :pan => 25)
+        @controller.animate!(:seconds => 5, :pan => 25)
         @controller.read_pipe.gets.should == "5,0,0,5,0,0\n"
         @controller.read_pipe.gets.should == "10,0,0,10,0,0\n"
         @controller.read_pipe.gets.should == "15,0,0,15,0,0\n"

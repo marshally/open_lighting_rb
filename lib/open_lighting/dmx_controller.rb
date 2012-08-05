@@ -91,11 +91,11 @@ module OpenLighting
       warn "[DEPRECATION] `transition!` is deprecated. Use `begin_animation!` instead."
     end
 
-    def begin_animation!(options = {}, &block)
+    def animate!(options = {}, &block)
       previous = current_values
       buffer(options)
 
-      block.call(@devices) if block
+      block.call(self) if block
 
       count = ticks(options[:seconds])
       count.times do |i|
@@ -103,6 +103,10 @@ module OpenLighting
         write! interpolate(previous, current_values, count, i+1)
         sleep(wait_time) unless self.do_not_sleep
       end
+    end
+
+    def begin_animation!(options = {}, &block)
+      animate!(options, &block)
     end
 
     def interpolate(first, last, total, i)
